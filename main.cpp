@@ -3,117 +3,472 @@
 #include <thread>
 #include <unistd.h>
 #include <iostream>
+#include <time.h>
+#include <stdlib.h>
+#include <vector>
 
-void moveObjects(sf::RectangleShape *car1,sf::RectangleShape *car2,sf::RectangleShape *car3,sf::RectangleShape *car4)
+int carsCount = 12;
+int window_w = 1300;
+int window_h = 1100;
+int car_w = 140;
+int car_h = 80;
+int player_w = 90;
+int player_h = 90;
+int stick_width_scale = 120;
+
+class Car : public sf::RectangleShape
+
 {
+private:
+    int speed;
+    char direction;
+    char status = 'i'; //o:out i:in
+public:
+    void setStatus(char c)
+    {
+        status = c;
+    }
+    char getStatus()
+    {
+        return status;
+    }
+    void setSpeed(int s)
+    {
+        speed = s;
+    }
+    int getSpeed()
+    {
+        return speed;
+    }
+    void setDirection(char d)
+    {
+        direction = d;
+    }
+    char getDirection()
+    {
+        return direction;
+    }
+};
 
-    int direction = 1; //1:to right , 0=to left
+class Stick : public sf::RectangleShape
+{
+private:
+    int speed;
+    char status;    //o:out i:in
+    char direction; //R:right L:left
+public:
+    void setStatus(char c)
+    {
+        status = c;
+    }
+    char getStatus()
+    {
+        return status;
+    }
+    void setSpeed(int s)
+    {
+        speed = s;
+    }
+    int getSpeed()
+    {
+        return speed;
+    }
+    void setDirection(int d)
+    {
+        direction = d;
+    }
+    int getDirection()
+    {
+        return direction;
+    }
+};
+
+void moveCars(std::vector<Car> &cars)
+{
     while (true)
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        if (car1->getPosition().x==500)
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        for (int i = 0; i < carsCount; i++)
         {
-            direction=0;
+            if (cars[i].getStatus() == 'i')
+            {
+                if (cars[i].getDirection() == 'R')
+                {
+                    if (cars[i].getPosition().x >= window_w)
+                    {
+                        cars[i].setStatus('o');
+                    }
+                    else
+                    {
+                        cars[i].move(cars[i].getSpeed(), 0);
+                    }
+                }
+                else if (cars[i].getDirection() == 'L')
+                {
+                    if (cars[i].getPosition().x <= -car_w)
+                    {
+                        cars[i].setStatus('o');
+                    }
+                    else
+                    {
+                        cars[i].move(-cars[i].getSpeed(), 0);
+                    }
+                }
+            }
         }
-        if (car1->getPosition().x==0)
-        {
-            direction=1;
-        }
-        if (direction==1)
-        {
-            car1->move(5,0);
-        }else if (direction==0)
-        {
-            car1->move(-5,0);
-        }
-
-        if (car2->getPosition().x==500)
-        {
-            direction=0;
-        }
-        if (car2->getPosition().x==0)
-        {
-            direction=1;
-        }
-        if (direction==1)
-        {
-            car2->move(6,0);
-        }else if (direction==0)
-        {
-            car2->move(-6,0);
-        }
-
-        if (car3->getPosition().x==500)
-        {
-            direction=0;
-        }
-        if (car3->getPosition().x==0)
-        {
-            direction=1;
-        }
-        if (direction==1)
-        {
-            car3->move(3,0);
-        }else if (direction==0)
-        {
-            car3->move(-3,0);
-        }
-
-        if (car4->getPosition().x==500)
-        {
-            direction=0;
-        }
-        if (car4->getPosition().x==0)
-        {
-            direction=1;
-        }
-        if (direction==1)
-        {
-            car4->move(8,0);
-        }else if (direction==0)
-        {
-            car4->move(-8,0);
-        }
-
     }
+}
 
+void moveSticks(std::vector<Stick> &sticks1, std::vector<Stick> &sticks2, std::vector<Stick> &sticks3, std::vector<Stick> &sticks4)
+{
+    while (true)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        for (int i = 0; i < 3; i++)
+        {
+            if (sticks1[i].getStatus() == 'i')
+            {
+                if (sticks1[i].getDirection() == 'R')
+                {
+                    if (sticks1[i].getPosition().x >= window_w)
+                    {
+                        sticks1[i].setStatus('o');
+                    }
+                    else
+                    {
+                        sticks1[i].move(sticks1[i].getSpeed(), 0);
+                    }
+                }
+                else if (sticks1[i].getDirection() == 'L')
+                {
+                    if (sticks1[i].getPosition().x <= -sticks1[i].getSize().x)
+                    {
+                        sticks1[i].setStatus('o');
+                    }
+                    else
+                    {
+                        sticks1[i].move(-sticks1[i].getSpeed(), 0);
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            if (sticks2[i].getStatus() == 'i')
+            {
+                if (sticks2[i].getDirection() == 'R')
+                {
+                    if (sticks2[i].getPosition().x >= window_w)
+                    {
+                        sticks2[i].setStatus('o');
+                    }
+                    else
+                    {
+                        sticks2[i].move(sticks2[i].getSpeed(), 0);
+                    }
+                }
+                else if (sticks2[i].getDirection() == 'L')
+                {
+                    if (sticks2[i].getPosition().x <= -sticks2[i].getSize().x)
+                    {
+                        sticks2[i].setStatus('o');
+                    }
+                    else
+                    {
+                        sticks2[i].move(-sticks2[i].getSpeed(), 0);
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            if (sticks3[i].getStatus() == 'i')
+            {
+                if (sticks3[i].getDirection() == 'R')
+                {
+                    if (sticks3[i].getPosition().x >= window_w)
+                    {
+                        sticks3[i].setStatus('o');
+                    }
+                    else
+                    {
+                        sticks3[i].move(sticks3[i].getSpeed(), 0);
+                    }
+                }
+                else if (sticks3[i].getDirection() == 'L')
+                {
+                    if (sticks3[i].getPosition().x <= -sticks3[i].getSize().x)
+                    {
+                        sticks3[i].setStatus('o');
+                    }
+                    else
+                    {
+                        sticks3[i].move(-sticks3[i].getSpeed(), 0);
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            if (sticks4[i].getStatus() == 'i')
+            {
+                if (sticks4[i].getDirection() == 'R')
+                {
+                    if (sticks4[i].getPosition().x >= window_w)
+                    {
+                        sticks4[i].setStatus('o');
+                    }
+                    else
+                    {
+                        sticks4[i].move(sticks4[i].getSpeed(), 0);
+                    }
+                }
+                else if (sticks4[i].getDirection() == 'L')
+                {
+                    if (sticks4[i].getPosition().x <= -sticks4[i].getSize().x)
+                    {
+                        sticks4[i].setStatus('o');
+                    }
+                    else
+                    {
+                        sticks4[i].move(-sticks4[i].getSpeed(), 0);
+                    }
+                }
+            }
+        }
+    }
+}
 
+void createNewCarSet(std::vector<Car> &cars)
+{
+    int setNum = 0;
+    while (true)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (cars[setNum * 4 + i].getStatus() == 'o')
+            {
+                int speed = (rand() % 8) + 10; //10-17
+                printf("%d ", speed);
+                char direction = (i % 2 == 0) ? 'R' : 'L';
+                if (direction == 'R')
+                {
+                    cars[setNum * 4 + i].setPosition(-car_w, cars[setNum * 4 + i].getPosition().y);
+                }
+                else if (direction == 'L')
+                {
+                    cars[setNum * 4 + i].setPosition(window_w, cars[setNum * 4 + i].getPosition().y);
+                }
+                cars[setNum * 4 + i].setSpeed(speed);
+                cars[setNum * 4 + i].setStatus('i');
+                cars[setNum * 4 + i].setDirection(direction);
+            }
+        }
+        setNum++;
+        if (setNum == 3)
+        {
+            setNum = 0;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+    }
+}
+
+void createNewStickLine1(std::vector<Stick> &sticks)
+{
+    int replacingDelay = ((rand() % 3) + 3) * 1000; //3000-5000millisec
+    int speed = (rand() % 5) + 11;                  //11-15
+    int width = ((rand() % 4) + 1) * stick_width_scale;
+    int i = 0;
+    while (true)
+    {
+        if (sticks[i].getStatus() == 'o')
+        {
+            sticks[i].setSize(sf::Vector2f(width, car_h));
+            sticks[i].setPosition(-sticks[i].getSize().x, sticks[i].getPosition().y);
+            sticks[i].setSpeed(speed);
+            sticks[i].setStatus('i');
+            sticks[i].setDirection('R');
+        }
+        i++;
+        if (i == 3)
+        {
+            i = 0;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(replacingDelay));
+    }
+}
+
+void createNewStickLine2(std::vector<Stick> &sticks)
+{
+    int replacingDelay = ((rand() % 3) + 3) * 1000; //3000-5000millisec
+    int speed = (rand() % 5) + 11;                  //11-15
+    int width = ((rand() % 4) + 1) * stick_width_scale;
+    int i = 0;
+    while (true)
+    {
+        if (sticks[i].getStatus() == 'o')
+        {
+            sticks[i].setSize(sf::Vector2f(width, car_h));
+            sticks[i].setPosition(window_w, sticks[i].getPosition().y);
+            sticks[i].setSpeed(speed);
+            sticks[i].setStatus('i');
+            sticks[i].setDirection('L');
+        }
+        i++;
+        if (i == 3)
+        {
+            i = 0;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(replacingDelay));
+    }
+}
+
+void createNewStickLine3(std::vector<Stick> &sticks)
+{
+    int replacingDelay = ((rand() % 3) + 3) * 1000; //3000-5000millisec
+    int speed = (rand() % 5) + 11;                  //11-15
+    int width = ((rand() % 4) + 1) * stick_width_scale;
+    int i = 0;
+    while (true)
+    {
+        if (sticks[i].getStatus() == 'o')
+        {
+            sticks[i].setSize(sf::Vector2f(width, car_h));
+            sticks[i].setPosition(-sticks[i].getSize().x, sticks[i].getPosition().y);
+            sticks[i].setSpeed(speed);
+            sticks[i].setStatus('i');
+            sticks[i].setDirection('R');
+        }
+        i++;
+        if (i == 3)
+        {
+            i = 0;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(replacingDelay));
+    }
+}
+
+void createNewStickLine4(std::vector<Stick> &sticks)
+{
+    int replacingDelay = ((rand() % 3) + 3) * 1000; //3000-5000millisec
+    int speed = (rand() % 5) + 11;                  //11-15
+    int width = ((rand() % 4) + 1) * stick_width_scale;
+    int i = 0;
+    while (true)
+    {
+        if (sticks[i].getStatus() == 'o')
+        {
+            sticks[i].setSize(sf::Vector2f(width, car_h));
+            sticks[i].setPosition(window_w, sticks[i].getPosition().y);
+            sticks[i].setSpeed(speed);
+            sticks[i].setStatus('i');
+            sticks[i].setDirection('L');
+        }
+        i++;
+        if (i == 3)
+        {
+            i = 0;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(replacingDelay));
+    }
 }
 
 int main()
 {
     using namespace sf;
     using namespace std;
-    RenderWindow window(sf::VideoMode(600, 600), "SFML works!");
+    RenderWindow window(sf::VideoMode(window_w, window_h), "SFML works!");
     RectangleShape player;
-    RectangleShape car1;
-    RectangleShape car2;
-    RectangleShape car3;
-    RectangleShape car4;
+    vector<Car> cars;
+    vector<Stick> sticks1;
+    vector<Stick> sticks2;
+    vector<Stick> sticks3;
+    vector<Stick> sticks4;
 
-    player.setSize(Vector2f(40, 100));
-    player.setPosition(290, 490);
-    player.setFillColor(sf::Color::Blue);
+    srand(time(NULL));
 
-    car1.setSize(Vector2f(80, 40));
-    car1.setPosition(0, 430);
-    car1.setFillColor(sf::Color::Red);
-    car2.setSize(Vector2f(80, 40));
-    car2.setPosition(0, 380);
-    car2.setFillColor(sf::Color::Red);
-    car3.setSize(Vector2f(80, 40));
-    car3.setPosition(0, 330);
-    car3.setFillColor(sf::Color::Red);
-    car4.setSize(Vector2f(80, 40));
-    car4.setPosition(0, 280);
-    car4.setFillColor(sf::Color::Red);
+    for (int i = 0; i < carsCount; i++)
+    {
+        Car car;
+        car.setFillColor(sf::Color::Red);
+        car.setSize(Vector2f(car_w, car_h));
+        car.setStatus('o');
+        car.setPosition(0, window_h - (((i % 4) + 2) * 100) + 10);
+        cars.push_back(car);
+    }
 
-    
-    std::thread th(&moveObjects,&car1,&car2,&car3,&car4);
-    
+    for (int i = 0; i < 3; i++)
+    {
+        Stick stick;
+        stick.setFillColor(sf::Color::Green);
+        stick.setSize(Vector2f(100, car_h));
+        stick.setStatus('o');
+        stick.setPosition(0, window_h - 700 + 10);
+        sticks1.push_back(stick);
+    }
 
+    for (int i = 0; i < 3; i++)
+    {
+        Stick stick;
+        stick.setFillColor(sf::Color::Green);
+        stick.setSize(Vector2f(100, car_h));
+        stick.setStatus('o');
+        stick.setPosition(0, window_h - 800 + 10);
+        sticks2.push_back(stick);
+    }
+
+    for (int i = 0; i < 3; i++)
+    {
+        Stick stick;
+        stick.setFillColor(sf::Color::Green);
+        stick.setSize(Vector2f(100, car_h));
+        stick.setStatus('o');
+        stick.setPosition(0, window_h - 900 + 10);
+        sticks3.push_back(stick);
+    }
+
+    for (int i = 0; i < 3; i++)
+    {
+        Stick stick;
+        stick.setFillColor(sf::Color::Green);
+        stick.setSize(Vector2f(100, car_h));
+        stick.setStatus('o');
+        stick.setPosition(0, window_h - 1000 + 10);
+        sticks4.push_back(stick);
+    }
+
+    player.setSize(Vector2f(player_w, player_h));
+    player.setPosition((window_w - player_w) / 2, window_h - player_h - 5);
+    player.setFillColor(sf::Color::Magenta);
+
+    std::thread thread_set_cars(&createNewCarSet, ref(cars));
+    std::thread thread_set_sticks1(&createNewStickLine1, ref(sticks1));
+    std::thread thread_set_sticks2(&createNewStickLine2, ref(sticks2));
+    std::thread thread_set_sticks3(&createNewStickLine3, ref(sticks3));
+    std::thread thread_set_sticks4(&createNewStickLine4, ref(sticks4));
+    std::thread thread_move_cars(&moveCars, ref(cars));
+    std::thread thread_move_sticks(&moveSticks, ref(sticks1), ref(sticks2), ref(sticks3), ref(sticks4));
+
+    int c = 0;
+    int gameover = 0;
     while (window.isOpen())
     {
+        for (int i = 0; i < carsCount; i++)
+        {
+            if (cars[i].getStatus() == 'i')
+            {
+                if ((((player.getPosition().x <= cars[i].getPosition().x) && (player.getPosition().x + player_w - cars[i].getPosition().x >= 0)) ||
+                     ((player.getPosition().x >= cars[i].getPosition().x) && (cars[i].getPosition().x + car_w - player.getPosition().x >= 0))) &&
+                    (((player.getPosition().y <= cars[i].getPosition().y) && (player.getPosition().y + player_h - cars[i].getPosition().y >= 0)) ||
+                     ((player.getPosition().y >= cars[i].getPosition().y) && (cars[i].getPosition().y + car_h - player.getPosition().y >= 0))))
+                {
+                    //accident
+                    gameover = 1;
+                    break;
+                }
+            }
+        }
+
         Event event;
         while (window.pollEvent(event))
         {
@@ -121,19 +476,82 @@ int main()
             {
                 window.close();
             }
-            if (event.type == Event::KeyPressed)
+            if (event.type == Event::KeyReleased)
             {
-                player.move(0, -10);
+                if (event.key.code == sf::Keyboard::Up)
+                {
+                    if (player.getPosition().y != 5)
+                    {
+                        player.move(0, -100);
+                    }
+                }
+                if (event.key.code == sf::Keyboard::Down)
+                {
+                    if (player.getPosition().y != window_h - player_h - 5)
+                    {
+                        player.move(0, 100);
+                    }
+                }
+                if (event.key.code == sf::Keyboard::Right)
+                {
+                    if (player.getPosition().x != window_w - player_w - 5)
+                    {
+                        player.move(100, 0);
+                    }
+                }
+                if (event.key.code == sf::Keyboard::Left)
+                {
+                    if (player.getPosition().x != 5)
+                    {
+                        player.move(-100, 0);
+                    }
+                }
             }
         }
-        
+
         window.clear();
         window.draw(player);
-        window.draw(car1);
-        window.draw(car2);
-        window.draw(car3);
-        window.draw(car4);
+        for (int i = 0; i < carsCount; i++)
+        {
+            if (cars[i].getStatus() == 'i')
+            {
+                window.draw(cars[i]);
+            }
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            if (sticks1[i].getStatus() == 'i')
+            {
+                window.draw(sticks1[i]);
+            }
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            if (sticks2[i].getStatus() == 'i')
+            {
+                window.draw(sticks2[i]);
+            }
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            if (sticks3[i].getStatus() == 'i')
+            {
+                window.draw(sticks3[i]);
+            }
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            if (sticks4[i].getStatus() == 'i')
+            {
+                window.draw(sticks4[i]);
+            }
+        }
         window.display();
+
+        if (gameover == 1)
+        {
+            break;
+        }
     }
 
     return 0;
