@@ -12,9 +12,11 @@ int window_w = 1300;
 int window_h = 1100;
 int car_w = 140;
 int car_h = 80;
-int player_w = 90;
-int player_h = 90;
+int player_w = 70;
+int player_h = 70;
 int stick_width_scale = 120;
+bool PlayerOnStick = false;
+int gameover = 0;
 
 class Car : public sf::RectangleShape
 
@@ -119,121 +121,140 @@ void moveCars(std::vector<Car> &cars)
     }
 }
 
-void moveSticks(std::vector<Stick> &sticks1, std::vector<Stick> &sticks2, std::vector<Stick> &sticks3, std::vector<Stick> &sticks4)
+void moveSticks(std::vector<Stick> &sticks1, std::vector<Stick> &sticks2, std::vector<Stick> &sticks3, std::vector<Stick> &sticks4, sf::RectangleShape *player)
 {
+
     while (true)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        bool isPlayerOnStick = false;
         for (int i = 0; i < 3; i++)
         {
             if (sticks1[i].getStatus() == 'i')
             {
-                if (sticks1[i].getDirection() == 'R')
+                if (sticks1[i].getPosition().x >= window_w)
                 {
-                    if (sticks1[i].getPosition().x >= window_w)
+                    sticks1[i].setStatus('o');
+                }
+                else
+                {
+                    sticks1[i].move(sticks1[i].getSpeed(), 0);
+                }
+
+                //check if player is on stick
+                if ((player->getPosition().y == sticks1[i].getPosition().y + 5) &&
+                    ((player->getPosition().x >= sticks1[i].getPosition().x - (player_w / 2)) &&
+                     (player->getPosition().x + player_w <= sticks1[i].getPosition().x + sticks1[i].getSize().x + (player_w / 2))))
+                {
+                    isPlayerOnStick = true;
+                    if (window_w - 5 - (player->getPosition().x + player_w) < sticks1[i].getSpeed())
                     {
-                        sticks1[i].setStatus('o');
+                        player->move(window_w - 5 - (player->getPosition().x + player_w), 0);
                     }
                     else
                     {
-                        sticks1[i].move(sticks1[i].getSpeed(), 0);
+                        player->move(sticks1[i].getSpeed(), 0);
                     }
                 }
-                else if (sticks1[i].getDirection() == 'L')
-                {
-                    if (sticks1[i].getPosition().x <= -sticks1[i].getSize().x)
-                    {
-                        sticks1[i].setStatus('o');
-                    }
-                    else
-                    {
-                        sticks1[i].move(-sticks1[i].getSpeed(), 0);
-                    }
-                }
+                //
             }
         }
         for (int i = 0; i < 3; i++)
         {
             if (sticks2[i].getStatus() == 'i')
             {
-                if (sticks2[i].getDirection() == 'R')
+                if (sticks2[i].getPosition().x <= -sticks2[i].getSize().x)
                 {
-                    if (sticks2[i].getPosition().x >= window_w)
+                    sticks2[i].setStatus('o');
+                }
+                else
+                {
+                    sticks2[i].move(-sticks2[i].getSpeed(), 0);
+                }
+                //check if player is on stick
+                if ((player->getPosition().y == sticks2[i].getPosition().y + 5) &&
+                    ((player->getPosition().x >= sticks2[i].getPosition().x - (player_w / 2)) &&
+                     (player->getPosition().x + player_w <= sticks2[i].getPosition().x + sticks2[i].getSize().x + (player_w / 2))))
+                {
+                    isPlayerOnStick = true;
+                    if (player->getPosition().x - 5 < sticks2[i].getSpeed())
                     {
-                        sticks2[i].setStatus('o');
+                        player->move(-(player->getPosition().x - 5), 0);
                     }
                     else
                     {
-                        sticks2[i].move(sticks2[i].getSpeed(), 0);
+                        player->move(-sticks2[i].getSpeed(), 0);
                     }
                 }
-                else if (sticks2[i].getDirection() == 'L')
-                {
-                    if (sticks2[i].getPosition().x <= -sticks2[i].getSize().x)
-                    {
-                        sticks2[i].setStatus('o');
-                    }
-                    else
-                    {
-                        sticks2[i].move(-sticks2[i].getSpeed(), 0);
-                    }
-                }
+                //
             }
         }
         for (int i = 0; i < 3; i++)
         {
             if (sticks3[i].getStatus() == 'i')
             {
-                if (sticks3[i].getDirection() == 'R')
+                if (sticks3[i].getPosition().x >= window_w)
                 {
-                    if (sticks3[i].getPosition().x >= window_w)
-                    {
-                        sticks3[i].setStatus('o');
-                    }
-                    else
-                    {
-                        sticks3[i].move(sticks3[i].getSpeed(), 0);
-                    }
+                    sticks3[i].setStatus('o');
                 }
-                else if (sticks3[i].getDirection() == 'L')
+                else
                 {
-                    if (sticks3[i].getPosition().x <= -sticks3[i].getSize().x)
-                    {
-                        sticks3[i].setStatus('o');
-                    }
-                    else
-                    {
-                        sticks3[i].move(-sticks3[i].getSpeed(), 0);
-                    }
+                    sticks3[i].move(sticks3[i].getSpeed(), 0);
                 }
             }
+            //check if player is on stick
+            if ((player->getPosition().y == sticks3[i].getPosition().y + 5) &&
+                ((player->getPosition().x >= sticks3[i].getPosition().x - (player_w / 2)) &&
+                 (player->getPosition().x + player_w <= sticks3[i].getPosition().x + sticks3[i].getSize().x + (player_w / 2))))
+            {
+                isPlayerOnStick = true;
+                if (window_w - 5 - (player->getPosition().x + player_w) < sticks3[i].getSpeed())
+                {
+                    player->move(window_w - 5 - (player->getPosition().x + player_w), 0);
+                }
+                else
+                {
+                    player->move(sticks3[i].getSpeed(), 0);
+                }
+            }
+            //
         }
         for (int i = 0; i < 3; i++)
         {
             if (sticks4[i].getStatus() == 'i')
             {
-                if (sticks4[i].getDirection() == 'R')
+                if (sticks4[i].getPosition().x <= -sticks4[i].getSize().x)
                 {
-                    if (sticks4[i].getPosition().x >= window_w)
+                    sticks4[i].setStatus('o');
+                }
+                else
+                {
+                    sticks4[i].move(-sticks4[i].getSpeed(), 0);
+                }
+                //check if player is on stick
+                if ((player->getPosition().y == sticks4[i].getPosition().y + 5) &&
+                    ((player->getPosition().x >= sticks4[i].getPosition().x - (player_w / 2)) &&
+                     (player->getPosition().x + player_w <= sticks4[i].getPosition().x + sticks4[i].getSize().x + (player_w / 2))))
+                {
+                    isPlayerOnStick = true;
+                    if (player->getPosition().x - 5 < sticks4[i].getSpeed())
                     {
-                        sticks4[i].setStatus('o');
+                        player->move(-(player->getPosition().x - 5), 0);
                     }
                     else
                     {
-                        sticks4[i].move(sticks4[i].getSpeed(), 0);
+                        player->move(-sticks4[i].getSpeed(), 0);
                     }
                 }
-                else if (sticks4[i].getDirection() == 'L')
-                {
-                    if (sticks4[i].getPosition().x <= -sticks4[i].getSize().x)
-                    {
-                        sticks4[i].setStatus('o');
-                    }
-                    else
-                    {
-                        sticks4[i].move(-sticks4[i].getSpeed(), 0);
-                    }
-                }
+                //
+            }
+        }
+        //ckeck if player has fallen in water
+        if (player->getPosition().y >= 100 && player->getPosition().y <= 500)
+        {
+            if (!isPlayerOnStick)
+            {
+                gameover = 1;
             }
         }
     }
@@ -378,12 +399,13 @@ int main()
     using namespace sf;
     using namespace std;
     RenderWindow window(sf::VideoMode(window_w, window_h), "SFML works!");
-    RectangleShape player;
+
     vector<Car> cars;
     vector<Stick> sticks1;
     vector<Stick> sticks2;
     vector<Stick> sticks3;
     vector<Stick> sticks4;
+    RectangleShape player;
 
     srand(time(NULL));
 
@@ -438,7 +460,7 @@ int main()
     }
 
     player.setSize(Vector2f(player_w, player_h));
-    player.setPosition((window_w - player_w) / 2, window_h - player_h - 5);
+    player.setPosition((window_w - player_w) / 2, window_h - player_h - 15);
     player.setFillColor(sf::Color::Magenta);
 
     std::thread thread_set_cars(&createNewCarSet, ref(cars));
@@ -447,10 +469,9 @@ int main()
     std::thread thread_set_sticks3(&createNewStickLine3, ref(sticks3));
     std::thread thread_set_sticks4(&createNewStickLine4, ref(sticks4));
     std::thread thread_move_cars(&moveCars, ref(cars));
-    std::thread thread_move_sticks(&moveSticks, ref(sticks1), ref(sticks2), ref(sticks3), ref(sticks4));
+    std::thread thread_move_sticks(&moveSticks, ref(sticks1), ref(sticks2), ref(sticks3), ref(sticks4), &player);
 
     int c = 0;
-    int gameover = 0;
     while (window.isOpen())
     {
         for (int i = 0; i < carsCount; i++)
@@ -480,28 +501,36 @@ int main()
             {
                 if (event.key.code == sf::Keyboard::Up)
                 {
-                    if (player.getPosition().y != 5)
+                    if (player.getPosition().y != 15)
                     {
                         player.move(0, -100);
                     }
                 }
                 if (event.key.code == sf::Keyboard::Down)
                 {
-                    if (player.getPosition().y != window_h - player_h - 5)
+                    if (player.getPosition().y != window_h - player_h - 15)
                     {
                         player.move(0, 100);
                     }
                 }
                 if (event.key.code == sf::Keyboard::Right)
                 {
-                    if (player.getPosition().x != window_w - player_w - 5)
+                    if (window_w - 5 - (player.getPosition().x + player_w) < 100)
+                    {
+                        player.move(window_w - 5 - (player.getPosition().x + player_w), 0);
+                    }
+                    else
                     {
                         player.move(100, 0);
                     }
                 }
                 if (event.key.code == sf::Keyboard::Left)
                 {
-                    if (player.getPosition().x != 5)
+                    if (player.getPosition().x - 5 < 100)
+                    {
+                        player.move(-(player.getPosition().x - 5), 0);
+                    }
+                    else
                     {
                         player.move(-100, 0);
                     }
@@ -510,7 +539,6 @@ int main()
         }
 
         window.clear();
-        window.draw(player);
         for (int i = 0; i < carsCount; i++)
         {
             if (cars[i].getStatus() == 'i')
@@ -546,6 +574,7 @@ int main()
                 window.draw(sticks4[i]);
             }
         }
+        window.draw(player);
         window.display();
 
         if (gameover == 1)
