@@ -474,6 +474,7 @@ int main()
     int c = 0;
     while (window.isOpen())
     {
+
         for (int i = 0; i < carsCount; i++)
         {
             if (cars[i].getStatus() == 'i')
@@ -539,6 +540,57 @@ int main()
         }
 
         window.clear();
+        //background
+        Texture checkedl;
+        Sprite checkedline;
+        if (!checkedl.loadFromFile("beach1.jpg"))
+            cout << "Failed loading";
+        checkedline.setTexture(checkedl); //checked line pos 0
+        checkedline.setPosition(0, 500);
+        window.draw(checkedline);
+                Texture checkel1;
+        Sprite checkel1ine;
+        if (!checkel1.loadFromFile("checked.jpg"))
+            cout << "Failed loading";
+        checkel1ine.setTexture(checkel1); //beach line pos 500
+        checkel1ine.setPosition(0, 0);
+        window.draw(checkel1ine);
+        Texture taroad100;
+        Sprite aroad100;
+        if (!taroad100.loadFromFile("aroad.jpg"))
+            cout << "Failed loading";
+        aroad100.setTexture(taroad100); //road 600
+        aroad100.setPosition(0, 600);
+        window.draw(aroad100);
+        Texture taroad200;
+        Sprite aroad200;
+        if (!taroad200.loadFromFile("aroad200.jpg"))
+            cout << "Failed loading";
+        aroad200.setTexture(taroad200); //road 700
+        aroad200.setPosition(0, 700);
+        window.draw(aroad200);
+        Texture taroad300;
+        Sprite aroad300;
+        if (!taroad300.loadFromFile("aroad.jpg"))
+            cout << "Failed loading";
+        aroad300.setTexture(taroad300); //road8 800 
+        aroad300.setPosition(0, 800);
+        window.draw(aroad300);
+        Texture taroad400;
+        Sprite aroad400;
+        if (!taroad400.loadFromFile("aroad200.jpg"))
+            cout << "Failed loading";
+        aroad400.setTexture(taroad400); //road 900
+        aroad400.setPosition(0, 900);
+        window.draw(aroad400);
+        Texture tsea;
+        Sprite sea;
+        if (!tsea.loadFromFile("sea.png"))
+            cout << "Failed loading";
+        sea.setTexture(tsea); //road100
+        sea.setPosition(0, 0);
+        window.draw(sea);
+
         for (int i = 0; i < carsCount; i++)
         {
             if (cars[i].getStatus() == 'i')
