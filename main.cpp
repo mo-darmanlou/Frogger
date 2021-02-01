@@ -6,6 +6,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <vector>
+#include <SFML/Audio.hpp>
 
 
 int carsCount = 12;
@@ -255,7 +256,7 @@ void moveSticks(std::vector<Stick> &sticks1, std::vector<Stick> &sticks2, std::v
         {
             if (!isPlayerOnStick)
             {
-                gameover = 1;
+                gameover = 2;
             }
         }
     }
@@ -412,7 +413,15 @@ int main()
 
     char const *fileNamesLeft[]={"Images/carl0.png","Images/carl1.png","Images/carl2.png","Images/carl3.png","Images/carl4.png","Images/carl5.png","Images/carl6.png"};
     char const *fileNamesRight[]={"Images/carr0.png","Images/carr1.png","Images/carr2.png","Images/carr3.png","Images/carr4.png","Images/carr5.png","Images/carr6.png"};
+
     Texture txt[carsCount];
+    Texture logg[5];
+    logg[0].loadFromFile("Images/log1.png");
+    logg[1].loadFromFile("Images/log2.png");
+    logg[2].loadFromFile("Images/log3.png");
+    logg[3].loadFromFile("Images/log4.png");
+    logg[4].loadFromFile("Images/log5.png");
+
     for (int i = 0; i < carsCount; i++)
     {
         int n=rand();
@@ -434,41 +443,50 @@ int main()
 
     for (int i = 0; i < 3; i++)
     {
+        int n=rand();
         Stick stick;
-        stick.setFillColor(sf::Color::Green);
+        //stick.setFillColor(sf::Color::Green);
         stick.setSize(Vector2f(100, car_h));
         stick.setStatus('o');
         stick.setPosition(0, window_h - 700 + 10);
+        stick.setTexture(&logg[n%5]);
         sticks1.push_back(stick);
     }
 
     for (int i = 0; i < 3; i++)
     {
+        int n=rand();
         Stick stick;
-        stick.setFillColor(sf::Color::Green);
+      //  stick.setFillColor(sf::Color::Green);
         stick.setSize(Vector2f(100, car_h));
         stick.setStatus('o');
         stick.setPosition(0, window_h - 800 + 10);
+        stick.setTexture(&logg[n%5]);
         sticks2.push_back(stick);
     }
 
     for (int i = 0; i < 3; i++)
     {
+      
+        int n=rand();
         Stick stick;
-        stick.setFillColor(sf::Color::Green);
+      //  stick.setFillColor(sf::Color::Green);
         stick.setSize(Vector2f(100, car_h));
         stick.setStatus('o');
         stick.setPosition(0, window_h - 900 + 10);
+        stick.setTexture(&logg[n%5]);
         sticks3.push_back(stick);
     }
 
     for (int i = 0; i < 3; i++)
     {
+        int n=rand();
         Stick stick;
-        stick.setFillColor(sf::Color::Green);
+       // stick.setFillColor(sf::Color::Green);
         stick.setSize(Vector2f(100, car_h));
         stick.setStatus('o');
         stick.setPosition(0, window_h - 1000 + 10);
+        stick.setTexture(&logg[n%5]);
         sticks4.push_back(stick);
     }
 
@@ -501,6 +519,7 @@ int main()
                      ((player.getPosition().y >= cars[i].getPosition().y) && (cars[i].getPosition().y + car_h - player.getPosition().y >= 0))))
                 {
                     //accident
+                    
                     gameover = 1;
                     break;
                 }
@@ -559,7 +578,7 @@ int main()
         //background
         Texture checkedl;
         Sprite checkedline;
-        if (!checkedl.loadFromFile("Images/beach1.jpg"))
+        if (!checkedl.loadFromFile("Images/beach3.jpg"))
             cout << "Failed loading";
         checkedline.setTexture(checkedl); //checked line pos 0
         checkedline.setPosition(0, 500);
@@ -647,6 +666,24 @@ int main()
 
         if (gameover == 1)
         {
+            SoundBuffer buffer;
+                    Sound accident;
+
+                    buffer.loadFromFile("Audios/accident.wav");
+                    accident.setBuffer(buffer);
+                    accident.play();
+            sleep(sf::milliseconds(1100));
+            break;
+        }
+        if (gameover == 2)
+        {
+            SoundBuffer buffer;
+                    Sound drop;
+
+                    buffer.loadFromFile("Audios/drop.wav");
+                    drop.setBuffer(buffer);
+                    drop.play();
+            sleep(sf::milliseconds(1100));
             break;
         }
     }
