@@ -8,6 +8,7 @@
 #include <vector>
 #include <SFML/Audio.hpp>
 
+
 int carsCount = 12;
 int window_w = 1300;
 int window_h = 1100;
@@ -420,6 +421,7 @@ int main()
     logg[2].loadFromFile("Images/log3.png");
     logg[3].loadFromFile("Images/log4.png");
     logg[4].loadFromFile("Images/log5.png");
+
     for (int i = 0; i < carsCount; i++)
     {
         int n=rand();
