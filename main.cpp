@@ -8,7 +8,6 @@
 #include <vector>
 #include <SFML/Audio.hpp>
 
-
 int carsCount = 12;
 int window_w = 1300;
 int window_h = 1100;
@@ -411,9 +410,8 @@ int main()
 
     srand(time(NULL));
 
-    char const *fileNamesLeft[]={"Images/carl0.png","Images/carl1.png","Images/carl2.png","Images/carl3.png","Images/carl4.png","Images/carl5.png","Images/carl6.png"};
-    char const *fileNamesRight[]={"Images/carr0.png","Images/carr1.png","Images/carr2.png","Images/carr3.png","Images/carr4.png","Images/carr5.png","Images/carr6.png"};
-
+    char const *fileNamesLeft[] = {"Images/carl0.png", "Images/carl1.png", "Images/carl2.png", "Images/carl3.png", "Images/carl4.png", "Images/carl5.png", "Images/carl6.png"};
+    char const *fileNamesRight[] = {"Images/carr0.png", "Images/carr1.png", "Images/carr2.png", "Images/carr3.png", "Images/carr4.png", "Images/carr5.png", "Images/carr6.png"};
     Texture txt[carsCount];
     Texture logg[5];
     logg[0].loadFromFile("Images/log1.png");
@@ -424,13 +422,14 @@ int main()
 
     for (int i = 0; i < carsCount; i++)
     {
-        int n=rand();
-        if (i%4==0 || i%4==2)
+        int n = rand();
+        if (i % 4 == 0 || i % 4 == 2)
         {
-            txt[i].loadFromFile(fileNamesRight[n%7]);
-        }else if (i%4==1 || i%4==3)
+            txt[i].loadFromFile(fileNamesRight[n % 7]);
+        }
+        else if (i % 4 == 1 || i % 4 == 3)
         {
-            txt[i].loadFromFile(fileNamesLeft[n%7]);
+            txt[i].loadFromFile(fileNamesLeft[n % 7]);
         }
         Car car;
         //car.setFillColor(sf::Color::Red);
@@ -445,7 +444,6 @@ int main()
     {
         int n=rand();
         Stick stick;
-        //stick.setFillColor(sf::Color::Green);
         stick.setSize(Vector2f(100, car_h));
         stick.setStatus('o');
         stick.setPosition(0, window_h - 700 + 10);
@@ -457,7 +455,6 @@ int main()
     {
         int n=rand();
         Stick stick;
-      //  stick.setFillColor(sf::Color::Green);
         stick.setSize(Vector2f(100, car_h));
         stick.setStatus('o');
         stick.setPosition(0, window_h - 800 + 10);
@@ -467,10 +464,8 @@ int main()
 
     for (int i = 0; i < 3; i++)
     {
-      
         int n=rand();
         Stick stick;
-      //  stick.setFillColor(sf::Color::Green);
         stick.setSize(Vector2f(100, car_h));
         stick.setStatus('o');
         stick.setPosition(0, window_h - 900 + 10);
@@ -482,7 +477,6 @@ int main()
     {
         int n=rand();
         Stick stick;
-       // stick.setFillColor(sf::Color::Green);
         stick.setSize(Vector2f(100, car_h));
         stick.setStatus('o');
         stick.setPosition(0, window_h - 1000 + 10);
@@ -495,7 +489,64 @@ int main()
     player.setTexture(&tx);
     player.setSize(Vector2f(player_w, player_h));
     player.setPosition((window_w - player_w) / 2, window_h - player_h - 15);
-    //player.setFillColor(sf::Color::Magenta);
+
+    //background
+    Texture checkedl;
+    Sprite checkedline;
+    if (!checkedl.loadFromFile("Images/beach1.jpg"))
+        cout << "Failed loading";
+    checkedline.setTexture(checkedl); //checked line pos 0
+    checkedline.setPosition(0, 500);
+
+    Texture checkel1;
+    Sprite checkel1ine;
+    if (!checkel1.loadFromFile("Images/checked.jpg"))
+        cout << "Failed loading";
+    checkel1ine.setTexture(checkel1); //beach line pos 500
+    checkel1ine.setPosition(0, 0);
+
+    Texture taroad100;
+    Sprite aroad100;
+    if (!taroad100.loadFromFile("Images/aroad.jpg"))
+        cout << "Failed loading";
+    aroad100.setTexture(taroad100); //road 600
+    aroad100.setPosition(0, 600);
+
+    Texture taroad200;
+    Sprite aroad200;
+    if (!taroad200.loadFromFile("Images/aroad200.jpg"))
+        cout << "Failed loading";
+    aroad200.setTexture(taroad200); //road 700
+    aroad200.setPosition(0, 700);
+
+    Texture taroad300;
+    Sprite aroad300;
+    if (!taroad300.loadFromFile("Images/aroad.jpg"))
+        cout << "Failed loading";
+    aroad300.setTexture(taroad300); //road8 800
+    aroad300.setPosition(0, 800);
+
+    Texture taroad400;
+    Sprite aroad400;
+    if (!taroad400.loadFromFile("Images/aroad200.jpg"))
+        cout << "Failed loading";
+    aroad400.setTexture(taroad400); //road 900
+    aroad400.setPosition(0, 900);
+
+    Texture tsea1;
+    Sprite sea1;
+    if (!tsea1.loadFromFile("Images/rivertop.jpg"))
+        cout << "Failed loading";
+    sea1.setTexture(tsea1); //road100
+    sea1.setPosition(0, 0);
+
+    Texture tsea2;
+    Sprite sea2;
+    if (!tsea2.loadFromFile("Images/riverbottom.jpg"))
+        cout << "Failed loading";
+    sea2.setTexture(tsea2); //road100
+    sea2.setPosition(0, 300);
+    //background
 
     std::thread thread_set_cars(&createNewCarSet, ref(cars));
     std::thread thread_set_sticks1(&createNewStickLine1, ref(sticks1));
@@ -519,7 +570,6 @@ int main()
                      ((player.getPosition().y >= cars[i].getPosition().y) && (cars[i].getPosition().y + car_h - player.getPosition().y >= 0))))
                 {
                     //accident
-                    
                     gameover = 1;
                     break;
                 }
@@ -575,56 +625,14 @@ int main()
         }
 
         window.clear();
-        //background
-        Texture checkedl;
-        Sprite checkedline;
-        if (!checkedl.loadFromFile("Images/beach3.jpg"))
-            cout << "Failed loading";
-        checkedline.setTexture(checkedl); //checked line pos 0
-        checkedline.setPosition(0, 500);
         window.draw(checkedline);
-        Texture checkel1;
-        Sprite checkel1ine;
-        if (!checkel1.loadFromFile("Images/checked.jpg"))
-            cout << "Failed loading";
-        checkel1ine.setTexture(checkel1); //beach line pos 500
-        checkel1ine.setPosition(0, 0);
         window.draw(checkel1ine);
-        Texture taroad100;
-        Sprite aroad100;
-        if (!taroad100.loadFromFile("Images/aroad.jpg"))
-            cout << "Failed loading";
-        aroad100.setTexture(taroad100); //road 600
-        aroad100.setPosition(0, 600);
         window.draw(aroad100);
-        Texture taroad200;
-        Sprite aroad200;
-        if (!taroad200.loadFromFile("Images/aroad200.jpg"))
-            cout << "Failed loading";
-        aroad200.setTexture(taroad200); //road 700
-        aroad200.setPosition(0, 700);
         window.draw(aroad200);
-        Texture taroad300;
-        Sprite aroad300;
-        if (!taroad300.loadFromFile("Images/aroad.jpg"))
-            cout << "Failed loading";
-        aroad300.setTexture(taroad300); //road8 800
-        aroad300.setPosition(0, 800);
         window.draw(aroad300);
-        Texture taroad400;
-        Sprite aroad400;
-        if (!taroad400.loadFromFile("Images/aroad200.jpg"))
-            cout << "Failed loading";
-        aroad400.setTexture(taroad400); //road 900
-        aroad400.setPosition(0, 900);
         window.draw(aroad400);
-        Texture tsea;
-        Sprite sea;
-        if (!tsea.loadFromFile("Images/sea.png"))
-            cout << "Failed loading";
-        sea.setTexture(tsea); //road100
-        sea.setPosition(0, 0);
-        window.draw(sea);
+        window.draw(sea1);
+        window.draw(sea2);
 
         for (int i = 0; i < carsCount; i++)
         {
