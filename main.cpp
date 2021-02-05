@@ -9,15 +9,17 @@
 #include <SFML/Audio.hpp>
 
 int carsCount = 12;
-int window_w = 1300;
-int window_h = 1100;
+int startWindow_w = 700;
+int startWindow_h = 1000;
+int gameWindow_w = 1300;
+int gameWindow_h = 1100;
 int car_w = 160;
 int car_h = 80;
 int player_w = 70;
 int player_h = 70;
 int stick_width_scale = 120;
 bool PlayerOnStick = false;
-int gameover = 0;
+int gameSituation = 0;
 
 class Car : public sf::RectangleShape
 
@@ -90,14 +92,14 @@ void moveCars(std::vector<Car> &cars)
 {
     while (true)
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        std::this_thread::sleep_for(std::chrono::milliseconds(40));
         for (int i = 0; i < carsCount; i++)
         {
             if (cars[i].getStatus() == 'i')
             {
                 if (cars[i].getDirection() == 'R')
                 {
-                    if (cars[i].getPosition().x >= window_w)
+                    if (cars[i].getPosition().x >= gameWindow_w)
                     {
                         cars[i].setStatus('o');
                     }
@@ -127,13 +129,13 @@ void moveSticks(std::vector<Stick> &sticks1, std::vector<Stick> &sticks2, std::v
 
     while (true)
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        std::this_thread::sleep_for(std::chrono::milliseconds(40));
         bool isPlayerOnStick = false;
         for (int i = 0; i < 3; i++)
         {
             if (sticks1[i].getStatus() == 'i')
             {
-                if (sticks1[i].getPosition().x >= window_w)
+                if (sticks1[i].getPosition().x >= gameWindow_w)
                 {
                     sticks1[i].setStatus('o');
                 }
@@ -148,9 +150,9 @@ void moveSticks(std::vector<Stick> &sticks1, std::vector<Stick> &sticks2, std::v
                      (player->getPosition().x + player_w <= sticks1[i].getPosition().x + sticks1[i].getSize().x + (player_w / 2))))
                 {
                     isPlayerOnStick = true;
-                    if (window_w - 5 - (player->getPosition().x + player_w) < sticks1[i].getSpeed())
+                    if (gameWindow_w - 5 - (player->getPosition().x + player_w) < sticks1[i].getSpeed())
                     {
-                        player->move(window_w - 5 - (player->getPosition().x + player_w), 0);
+                        player->move(gameWindow_w - 5 - (player->getPosition().x + player_w), 0);
                     }
                     else
                     {
@@ -194,7 +196,7 @@ void moveSticks(std::vector<Stick> &sticks1, std::vector<Stick> &sticks2, std::v
         {
             if (sticks3[i].getStatus() == 'i')
             {
-                if (sticks3[i].getPosition().x >= window_w)
+                if (sticks3[i].getPosition().x >= gameWindow_w)
                 {
                     sticks3[i].setStatus('o');
                 }
@@ -209,9 +211,9 @@ void moveSticks(std::vector<Stick> &sticks1, std::vector<Stick> &sticks2, std::v
                  (player->getPosition().x + player_w <= sticks3[i].getPosition().x + sticks3[i].getSize().x + (player_w / 2))))
             {
                 isPlayerOnStick = true;
-                if (window_w - 5 - (player->getPosition().x + player_w) < sticks3[i].getSpeed())
+                if (gameWindow_w - 5 - (player->getPosition().x + player_w) < sticks3[i].getSpeed())
                 {
-                    player->move(window_w - 5 - (player->getPosition().x + player_w), 0);
+                    player->move(gameWindow_w - 5 - (player->getPosition().x + player_w), 0);
                 }
                 else
                 {
@@ -255,7 +257,7 @@ void moveSticks(std::vector<Stick> &sticks1, std::vector<Stick> &sticks2, std::v
         {
             if (!isPlayerOnStick)
             {
-                gameover = 2;
+                gameSituation = 2;
             }
         }
     }
@@ -270,8 +272,7 @@ void createNewCarSet(std::vector<Car> &cars)
         {
             if (cars[setNum * 4 + i].getStatus() == 'o')
             {
-                int speed = (rand() % 7) + 10; //11-17
-                printf("%d ", speed);
+                int speed = (rand() % 5) + 13; //13-17
                 char direction = (i % 2 == 0) ? 'R' : 'L';
                 if (direction == 'R')
                 {
@@ -279,7 +280,7 @@ void createNewCarSet(std::vector<Car> &cars)
                 }
                 else if (direction == 'L')
                 {
-                    cars[setNum * 4 + i].setPosition(window_w, cars[setNum * 4 + i].getPosition().y);
+                    cars[setNum * 4 + i].setPosition(gameWindow_w, cars[setNum * 4 + i].getPosition().y);
                 }
                 cars[setNum * 4 + i].setSpeed(speed);
                 cars[setNum * 4 + i].setStatus('i');
@@ -291,7 +292,7 @@ void createNewCarSet(std::vector<Car> &cars)
         {
             setNum = 0;
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1700));
     }
 }
 
@@ -331,7 +332,7 @@ void createNewStickLine2(std::vector<Stick> &sticks)
         if (sticks[i].getStatus() == 'o')
         {
             sticks[i].setSize(sf::Vector2f(width, car_h));
-            sticks[i].setPosition(window_w, sticks[i].getPosition().y);
+            sticks[i].setPosition(gameWindow_w, sticks[i].getPosition().y);
             sticks[i].setSpeed(speed);
             sticks[i].setStatus('i');
             sticks[i].setDirection('L');
@@ -381,7 +382,7 @@ void createNewStickLine4(std::vector<Stick> &sticks)
         if (sticks[i].getStatus() == 'o')
         {
             sticks[i].setSize(sf::Vector2f(width, car_h));
-            sticks[i].setPosition(window_w, sticks[i].getPosition().y);
+            sticks[i].setPosition(gameWindow_w, sticks[i].getPosition().y);
             sticks[i].setSpeed(speed);
             sticks[i].setStatus('i');
             sticks[i].setDirection('L');
@@ -395,20 +396,25 @@ void createNewStickLine4(std::vector<Stick> &sticks)
     }
 }
 
+void resetGame(sf::RectangleShape &player)
+{
+    player.setPosition((gameWindow_w - player_w) / 2, gameWindow_h - player_h - 15);
+    gameSituation = 0;
+}
 int main()
 {
+    srand(time(NULL));
     using namespace sf;
     using namespace std;
-    RenderWindow window(sf::VideoMode(window_w, window_h), "SFML works!");
+    RenderWindow startWindow;
+    RenderWindow gameWindow;
+    startWindow.create(sf::VideoMode(startWindow_w, startWindow_h), "works!");
 
     vector<Car> cars;
     vector<Stick> sticks1;
     vector<Stick> sticks2;
     vector<Stick> sticks3;
     vector<Stick> sticks4;
-    RectangleShape player;
-
-    srand(time(NULL));
 
     char const *fileNamesLeft[] = {"Images/carl0.png", "Images/carl1.png", "Images/carl2.png", "Images/carl3.png", "Images/carl4.png", "Images/carl5.png", "Images/carl6.png"};
     char const *fileNamesRight[] = {"Images/carr0.png", "Images/carr1.png", "Images/carr2.png", "Images/carr3.png", "Images/carr4.png", "Images/carr5.png", "Images/carr6.png"};
@@ -435,62 +441,111 @@ int main()
         //car.setFillColor(sf::Color::Red);
         car.setSize(Vector2f(car_w, car_h));
         car.setStatus('o');
-        car.setPosition(0, window_h - (((i % 4) + 2) * 100) + ((100 - car_h) / 2));
+        car.setPosition(0, gameWindow_h - (((i % 4) + 2) * 100) + ((100 - car_h) / 2));
         car.setTexture(&txt[i]);
         cars.push_back(car);
     }
 
     for (int i = 0; i < 3; i++)
     {
-        int n=rand();
+        int n = rand();
         Stick stick;
         stick.setSize(Vector2f(100, car_h));
         stick.setStatus('o');
-        stick.setPosition(0, window_h - 700 + 10);
-        stick.setTexture(&logg[n%5]);
+        stick.setPosition(0, gameWindow_h - 700 + 10);
+        stick.setTexture(&logg[n % 5]);
         sticks1.push_back(stick);
     }
 
     for (int i = 0; i < 3; i++)
     {
-        int n=rand();
+        int n = rand();
         Stick stick;
         stick.setSize(Vector2f(100, car_h));
         stick.setStatus('o');
-        stick.setPosition(0, window_h - 800 + 10);
-        stick.setTexture(&logg[n%5]);
+        stick.setPosition(0, gameWindow_h - 800 + 10);
+        stick.setTexture(&logg[n % 5]);
         sticks2.push_back(stick);
     }
 
     for (int i = 0; i < 3; i++)
     {
-        int n=rand();
+        int n = rand();
         Stick stick;
         stick.setSize(Vector2f(100, car_h));
         stick.setStatus('o');
-        stick.setPosition(0, window_h - 900 + 10);
-        stick.setTexture(&logg[n%5]);
+        stick.setPosition(0, gameWindow_h - 900 + 10);
+        stick.setTexture(&logg[n % 5]);
         sticks3.push_back(stick);
     }
 
     for (int i = 0; i < 3; i++)
     {
-        int n=rand();
+        int n = rand();
         Stick stick;
         stick.setSize(Vector2f(100, car_h));
         stick.setStatus('o');
-        stick.setPosition(0, window_h - 1000 + 10);
-        stick.setTexture(&logg[n%5]);
+        stick.setPosition(0, gameWindow_h - 1000 + 10);
+        stick.setTexture(&logg[n % 5]);
         sticks4.push_back(stick);
     }
 
-    Texture tx;
-    tx.loadFromFile("Images/pl.jpg");
-    player.setTexture(&tx);
-    player.setSize(Vector2f(player_w, player_h));
-    player.setPosition((window_w - player_w) / 2, window_h - player_h - 15);
+    //startWindowBackground
+    RectangleShape rectStartGame;
+    rectStartGame.setSize(Vector2f(450, 150));
+    rectStartGame.setPosition(Vector2f((startWindow_w - 450) / 2, 600));
+    rectStartGame.setFillColor(Color::Black);
+    rectStartGame.setOutlineColor(Color::White);
+    rectStartGame.setOutlineThickness(3);
+    RectangleShape rectExitGame;
+    rectExitGame.setSize(Vector2f(450, 150));
+    rectExitGame.setPosition(Vector2f((startWindow_w - 450) / 2, 800));
+    rectExitGame.setFillColor(Color::Black);
+    rectExitGame.setOutlineColor(Color::White);
+    rectExitGame.setOutlineThickness(3);
+    Font titleFont;
+    titleFont.loadFromFile("Fonts/title.ttf");
+    Font font;
+    font.loadFromFile("Fonts/normal.otf");
+    Text txtTitle;
+    txtTitle.setFont(titleFont);
+    txtTitle.setString("FROGGER");
+    txtTitle.setPosition(200, 100);
+    txtTitle.setFillColor(Color::Blue);
+    txtTitle.setCharacterSize(116);
+    Text txtStatus;
+    txtStatus.setFont(font);
+    txtStatus.setString("");
+    txtStatus.setPosition(280, 335);
+    txtStatus.setCharacterSize(54);
+    txtStatus.setStyle(Text::Underlined);
+    txtStatus.setFillColor(sf::Color::White);
+    Text txtStart;
+    txtStart.setFont(font);
+    txtStart.setString("Start");
+    txtStart.setPosition(270, 645);
+    txtStart.setCharacterSize(54);
+    txtStart.setFillColor(sf::Color::White);
+    Text txtExit;
+    txtExit.setFont(font);
+    txtExit.setString("Exit");
+    txtExit.setPosition(295, 845);
+    txtExit.setCharacterSize(54);
+    txtExit.setFillColor(sf::Color::White);
+    //startWindowBackground
 
-    //background
+    //gameWindowBackground
+    RectangleShape player;
+    Texture frog[4];
+    char const *frogFilesName[] = {"Images/frogt.png", "Images/frogr.png", "Images/frogd.png", "Images/frogl.png"};
+    for (int i = 0; i < 4; i++)
+    {
+        frog[i].loadFromFile(frogFilesName[i]);
+    }
+    player.setTexture(&frog[0]);
+    player.setSize(Vector2f(player_w, player_h));
+    player.setPosition((gameWindow_w - player_w) / 2, gameWindow_h - player_h - 15);
+
     Texture checkedl;
     Sprite checkedline;
     if (!checkedl.loadFromFile("Images/beach1.jpg"))
@@ -546,7 +601,7 @@ int main()
         cout << "Failed loading";
     sea2.setTexture(tsea2); //road100
     sea2.setPosition(0, 300);
-    //background
+    //gameWindowBackground
 
     std::thread thread_set_cars(&createNewCarSet, ref(cars));
     std::thread thread_set_sticks1(&createNewStickLine1, ref(sticks1));
@@ -555,145 +610,206 @@ int main()
     std::thread thread_set_sticks4(&createNewStickLine4, ref(sticks4));
     std::thread thread_move_cars(&moveCars, ref(cars));
     std::thread thread_move_sticks(&moveSticks, ref(sticks1), ref(sticks2), ref(sticks3), ref(sticks4), &player);
-
+   
     int c = 0;
-    while (window.isOpen())
+    bool isGameStarted = 0;
+    while (startWindow.isOpen())
     {
 
-        for (int i = 0; i < carsCount; i++)
+        Event startEvent;
+        while (startWindow.pollEvent(startEvent))
         {
-            if (cars[i].getStatus() == 'i')
+            if (startEvent.type == Event::Closed)
             {
-                if ((((player.getPosition().x <= cars[i].getPosition().x) && (player.getPosition().x + player_w - cars[i].getPosition().x >= 0)) ||
-                     ((player.getPosition().x >= cars[i].getPosition().x) && (cars[i].getPosition().x + car_w - player.getPosition().x >= 0))) &&
-                    (((player.getPosition().y <= cars[i].getPosition().y) && (player.getPosition().y + player_h - cars[i].getPosition().y >= 0)) ||
-                     ((player.getPosition().y >= cars[i].getPosition().y) && (cars[i].getPosition().y + car_h - player.getPosition().y >= 0))))
-                {
-                    //accident
-                    gameover = 1;
-                    break;
-                }
+                startWindow.close();
             }
-        }
-
-        Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == Event::Closed)
+            if (startEvent.type == Event::MouseButtonReleased)
             {
-                window.close();
-            }
-            if (event.type == Event::KeyReleased)
-            {
-                if (event.key.code == sf::Keyboard::Up)
+                if (startEvent.mouseButton.button == sf::Mouse::Left)
                 {
-                    if (player.getPosition().y != 15)
+                    if ((startEvent.mouseButton.x >= 125 && startEvent.mouseButton.x <= 575) && (startEvent.mouseButton.y >= 600 && startEvent.mouseButton.y <= 750))
                     {
-                        player.move(0, -100);
+                        //startButton
+                        gameWindow.create(sf::VideoMode(gameWindow_w, gameWindow_h), "SFML works!");
+                        resetGame(player);
+                        isGameStarted = 1;
+                        txtStatus.setString("");
                     }
-                }
-                if (event.key.code == sf::Keyboard::Down)
-                {
-                    if (player.getPosition().y != window_h - player_h - 15)
+                    if ((startEvent.mouseButton.x >= 125 && startEvent.mouseButton.x <= 575) && (startEvent.mouseButton.y >= 800 && startEvent.mouseButton.y <= 950))
                     {
-                        player.move(0, 100);
-                    }
-                }
-                if (event.key.code == sf::Keyboard::Right)
-                {
-                    if (window_w - 5 - (player.getPosition().x + player_w) < 100)
-                    {
-                        player.move(window_w - 5 - (player.getPosition().x + player_w), 0);
-                    }
-                    else
-                    {
-                        player.move(100, 0);
-                    }
-                }
-                if (event.key.code == sf::Keyboard::Left)
-                {
-                    if (player.getPosition().x - 5 < 100)
-                    {
-                        player.move(-(player.getPosition().x - 5), 0);
-                    }
-                    else
-                    {
-                        player.move(-100, 0);
+                        //exitButton
+                        exit(0);
                     }
                 }
             }
         }
 
-        window.clear();
-        window.draw(checkedline);
-        window.draw(checkel1ine);
-        window.draw(aroad100);
-        window.draw(aroad200);
-        window.draw(aroad300);
-        window.draw(aroad400);
-        window.draw(sea1);
-        window.draw(sea2);
+        if (isGameStarted == 1)
+        {
+            Event gameEvent;
+            while (gameWindow.pollEvent(gameEvent))
+            {
+                if (gameEvent.type == Event::Closed)
+                {
+                    txtStatus.setString("");
+                    gameWindow.close();
+                }
+                if (gameEvent.type == Event::KeyReleased)
+                {
+                    if (gameEvent.key.code == sf::Keyboard::Up)
+                    {
+                        if (player.getPosition().y != 15)
+                        {
+                            player.move(0, -100);
+                            player.setTexture(&frog[0]);
+                        }
+                    }
+                    if (gameEvent.key.code == sf::Keyboard::Down)
+                    {
+                        if (player.getPosition().y != gameWindow_h - player_h - 15)
+                        {
+                            player.move(0, 100);
+                            player.setTexture(&frog[2]);
+                        }
+                    }
+                    if (gameEvent.key.code == sf::Keyboard::Right)
+                    {
+                        if (gameWindow_w - 5 - (player.getPosition().x + player_w) < 100)
+                        {
+                            player.move(gameWindow_w - 5 - (player.getPosition().x + player_w), 0);
+                        }
+                        else
+                        {
+                            player.move(100, 0);
+                        }
+                        player.setTexture(&frog[1]);
+                    }
+                    if (gameEvent.key.code == sf::Keyboard::Left)
+                    {
+                        if (player.getPosition().x - 5 < 100)
+                        {
+                            player.move(-(player.getPosition().x - 5), 0);
+                        }
+                        else
+                        {
+                            player.move(-100, 0);
+                        }
+                        player.setTexture(&frog[3]);
+                    }
+                }
+            }
 
-        for (int i = 0; i < carsCount; i++)
-        {
-            if (cars[i].getStatus() == 'i')
+            for (int i = 0; i < carsCount; i++)
             {
-                window.draw(cars[i]);
+                if (cars[i].getStatus() == 'i')
+                {
+                    if ((((player.getPosition().x <= cars[i].getPosition().x) && (player.getPosition().x + player_w - cars[i].getPosition().x >= 0)) ||
+                         ((player.getPosition().x >= cars[i].getPosition().x) && (cars[i].getPosition().x + car_w - player.getPosition().x >= 0))) &&
+                        (((player.getPosition().y <= cars[i].getPosition().y) && (player.getPosition().y + player_h - cars[i].getPosition().y >= 0)) ||
+                         ((player.getPosition().y >= cars[i].getPosition().y) && (cars[i].getPosition().y + car_h - player.getPosition().y >= 0))))
+                    {
+                        //accident
+                        gameSituation = 1;
+                        break;
+                    }
+                }
             }
-        }
-        for (int i = 0; i < 3; i++)
-        {
-            if (sticks1[i].getStatus() == 'i')
-            {
-                window.draw(sticks1[i]);
-            }
-        }
-        for (int i = 0; i < 3; i++)
-        {
-            if (sticks2[i].getStatus() == 'i')
-            {
-                window.draw(sticks2[i]);
-            }
-        }
-        for (int i = 0; i < 3; i++)
-        {
-            if (sticks3[i].getStatus() == 'i')
-            {
-                window.draw(sticks3[i]);
-            }
-        }
-        for (int i = 0; i < 3; i++)
-        {
-            if (sticks4[i].getStatus() == 'i')
-            {
-                window.draw(sticks4[i]);
-            }
-        }
-        window.draw(player);
-        window.display();
 
-        if (gameover == 1)
-        {
-            SoundBuffer buffer;
-                    Sound accident;
+            gameWindow.clear();
+            gameWindow.draw(checkedline);
+            gameWindow.draw(checkel1ine);
+            gameWindow.draw(aroad100);
+            gameWindow.draw(aroad200);
+            gameWindow.draw(aroad300);
+            gameWindow.draw(aroad400);
+            gameWindow.draw(sea1);
+            gameWindow.draw(sea2);
 
-                    buffer.loadFromFile("Audios/accident.wav");
-                    accident.setBuffer(buffer);
-                    accident.play();
-            sleep(sf::milliseconds(1100));
-            break;
-        }
-        if (gameover == 2)
-        {
-            SoundBuffer buffer;
-                    Sound drop;
+            for (int i = 0; i < carsCount; i++)
+            {
+                if (cars[i].getStatus() == 'i')
+                {
+                    gameWindow.draw(cars[i]);
+                }
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                if (sticks1[i].getStatus() == 'i')
+                {
+                    gameWindow.draw(sticks1[i]);
+                }
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                if (sticks2[i].getStatus() == 'i')
+                {
+                    gameWindow.draw(sticks2[i]);
+                }
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                if (sticks3[i].getStatus() == 'i')
+                {
+                    gameWindow.draw(sticks3[i]);
+                }
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                if (sticks4[i].getStatus() == 'i')
+                {
+                    gameWindow.draw(sticks4[i]);
+                }
+            }
+            gameWindow.draw(player);
+            gameWindow.display();
 
-                    buffer.loadFromFile("Audios/drop.wav");
-                    drop.setBuffer(buffer);
-                    drop.play();
-            sleep(sf::milliseconds(1100));
-            break;
+            if (gameSituation == 1)
+            {
+                SoundBuffer buffer;
+                Sound accident;
+
+                buffer.loadFromFile("Audios/accident.wav");
+                accident.setBuffer(buffer);
+                accident.play();
+                sleep(sf::milliseconds(1100));
+                gameWindow.close();
+                isGameStarted = 0;
+                txtStatus.setPosition(200, 370);
+                txtStatus.setString("YOU LOST!");
+            }
+            if (gameSituation == 2)
+            {
+                SoundBuffer buffer;
+                Sound drop;
+
+                buffer.loadFromFile("Audios/drop.wav");
+                drop.setBuffer(buffer);
+                drop.play();
+                sleep(sf::milliseconds(1100));
+                gameWindow.close();
+                isGameStarted = 0;
+                txtStatus.setPosition(200, 370);
+                txtStatus.setString("YOU LOST!");
+            }
+            if (player.getPosition().y == 15)
+            {
+                //player won
+                sleep(sf::milliseconds(1100));
+                gameWindow.close();
+                isGameStarted = 0;
+                txtStatus.setPosition(210, 370);
+                txtStatus.setString("YOU WON!");
+            }
         }
+
+        startWindow.clear();
+        startWindow.draw(rectStartGame);
+        startWindow.draw(rectExitGame);
+        startWindow.draw(txtTitle);
+        startWindow.draw(txtStatus);
+        startWindow.draw(txtStart);
+        startWindow.draw(txtExit);
+        startWindow.display();
     }
 
     return 0;
